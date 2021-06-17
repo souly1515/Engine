@@ -30,3 +30,16 @@
 *.exe
 *.out
 *.app
+*.ipch
+*.db
+*.html
+*.js
+*.png
+*.css
+*.svg
+*.tlog
+*.pdb
+*.log
+*.idb
+*.recipe
+*.ilk
