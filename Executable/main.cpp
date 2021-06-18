@@ -43,6 +43,20 @@ struct Sys2
 	}
 };
 
+struct Sys3
+{
+	void operator()(B& b, C& c)
+	{
+		b.a += 5;
+		c.b += 23;
+	}
+
+	void Execute(Engine::EntityManager::EntityManager& GM)
+	{
+		std::cout << "custom Execute\n" << std::endl;
+	}
+};
+
 int main(int argc, char* argv[])
 {
 	std::cout << "Engine Start" << std::endl;
@@ -56,6 +70,7 @@ int main(int argc, char* argv[])
 
 	engineMan.RegisterSystem<Sys1>();
 	engineMan.RegisterSystem<Sys2>();
+	engineMan.RegisterSystem<Sys3>();
 
 	Entity entity[20];
 	for (int i = 0; i < 20; ++i)

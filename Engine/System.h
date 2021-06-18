@@ -19,31 +19,36 @@ namespace Engine
     namespace details
     {
 
+      template <typename T>
+      concept has_Execute = requires(T& t, EntityManager::EntityManager & GM)
+      {
+        t.Execute(GM);
+      };
+
       template< typename user_system >
-      struct CompletedSystem final : user_system, SystemBase
+      struct CompletedSystem final :  SystemBase
       {
         using func_traits = xcore::function::traits<user_system>;
         Tools::query m_Query;
-
-        void Run(EntityManager::EntityManager& GM) noexcept override
+        user_system us;
+        void Run(EntityManager::EntityManager& GM) noexcept
         {
-          constexpr bool has_Execute = requires(const user_system & us) {
-            user_system::Execute;
-          };
+          constexpr bool temp = has_Execute<user_system>;
 
-          if constexpr (has_Execute && &user_system::Execute != &SystemBase::Execute)
+          if constexpr (temp)
           {
-            user_system::Execute(GM);
+            us.Execute(GM);
           }
           else
           {
             // generate query
+
             auto archetypes = GM.Search(m_Query);
 
             // maybe have a fore each function that takes archetypes and a functor
             for (auto& archetype : archetypes)
             {
-              archetype->RunWithFunctor(*this);
+              archetype->RunWithFunctor(us);
             }
           }
         }
