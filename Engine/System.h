@@ -29,8 +29,17 @@ namespace Engine
       struct CompletedSystem final :  SystemBase
       {
         using func_traits = xcore::function::traits<user_system>;
-        Tools::query m_Query;
+        Tools::Query m_Query;
         user_system us;
+        
+        CompletedSystem()
+        {
+          m_Query.GenerateQueryFromFunction(us);
+        }
+
+        // no copy constructor
+        CompletedSystem(const CompletedSystem&) = delete;
+
         void Run(EntityManager::EntityManager& GM) noexcept
         {
           constexpr bool temp = has_Execute<user_system>;
@@ -42,15 +51,15 @@ namespace Engine
           else
           {
             // generate query
-
             auto archetypes = GM.Search(m_Query);
 
             // maybe have a fore each function that takes archetypes and a functor
-            for (auto& archetype : archetypes)
+            for (auto& archetype : archetypes.GetStore())
             {
               archetype->RunWithFunctor(us);
             }
           }
+          GM.UpdateStructuralComponents();
         }
       };
 

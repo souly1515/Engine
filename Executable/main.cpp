@@ -27,8 +27,10 @@ struct D
 
 struct Sys1
 {
+	int count = 0;
 	void operator()(A& a, B& b)
 	{
+		std::cout << "sys1 " << ++count << std::endl;
 		a.a += 1;
 		b.d += 2;
 	}
@@ -36,8 +38,10 @@ struct Sys1
 
 struct Sys2
 {
+	int count = 0;
 	void operator()(B& b, C& c)
 	{
+		std::cout << "sys2 " << ++count << std::endl;
 		b.a += 5;
 		c.b += 23;
 	}
@@ -45,15 +49,12 @@ struct Sys2
 
 struct Sys3
 {
-	void operator()(B& b, C& c)
+	int count = 0;
+	void operator()(B& b, D& d)
 	{
+		std::cout << "sys3 " << ++count << std::endl;
 		b.a += 5;
-		c.b += 23;
-	}
-
-	void Execute(Engine::EntityManager::EntityManager& GM)
-	{
-		std::cout << "custom Execute\n" << std::endl;
+		d.a[0] += 23;
 	}
 };
 
@@ -75,7 +76,10 @@ int main(int argc, char* argv[])
 	Entity entity[20];
 	for (int i = 0; i < 20; ++i)
 	{
-		entity[i] = engineMan.CreateEntity<B, A, C, D>();
+		if(i % 2)
+			entity[i] = engineMan.CreateEntity<B, A, C>();
+		else
+			entity[i] = engineMan.CreateEntity<B, A, C, D>();
 	}
 
 	for(int i = 0; i < 20; ++i)
@@ -83,7 +87,7 @@ int main(int argc, char* argv[])
 		A& a = engineMan.GetComponent<A>(entity[i]);
 		B& b = engineMan.GetComponent<B>(entity[i]);
 		C& c = engineMan.GetComponent<C>(entity[i]);
-		D& d = engineMan.GetComponent<D>(entity[i]);
+		D* d = engineMan.TryGetComponent<D>(entity[i]);
 
 		a.a = i * 5;
 		a.b = 20 - i * 2;
@@ -98,22 +102,24 @@ int main(int argc, char* argv[])
 		
 		for (int j = 0; j < 200; ++j)
 		{
-			d.a[j] = j + i;
+			if(d)
+				d->a[j] = j + i;
 		}
 	}
 
-	engineMan.RunSystems();
+	engineMan.RunSystemOnce();
 
 	for (int i = 0; i < 20; ++i)
 	{
 		A& a = engineMan.GetComponent<A>(entity[i]);
 		B& b = engineMan.GetComponent<B>(entity[i]);
 		C& c = engineMan.GetComponent<C>(entity[i]);
-		D& d = engineMan.GetComponent<D>(entity[i]);
+		D* d = engineMan.TryGetComponent<D>(entity[i]);
 		std::cout << "entity " << i << " A: " << a.a << " " << a.b << std::endl;
 		std::cout << "entity " << i << " B: " << int(b.a) << " " << int(b.b) << " " << b.c << " " << b.d << std::endl;
 		std::cout << "entity " << i << " C: " << c.a << " " << c.b << std::endl;
-		std::cout << "entity " << i << " D: " << d.a[0] << " " << d.a[13] << " " << d.a[199] << std::endl;
+		if(d)
+			std::cout << "entity " << i << " D: " << d->a[0] << " " << d->a[13] << " " << d->a[199] << std::endl;
 		std::cout << std::endl;
 	}
 

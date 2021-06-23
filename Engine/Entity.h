@@ -4,3 +4,8 @@
 
 
 using Entity = uint64_t;
+
+struct EntityComponent
+{
+	Entity entity;
+};

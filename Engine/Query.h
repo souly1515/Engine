@@ -6,21 +6,28 @@ namespace Engine
 {
   namespace Tools
   {
-    struct query
+    template<typename T>
+    concept Is_Func = requires
     {
-      template< typename T_COMPONENTS >
+      T::operator();
+    };
+
+
+    struct Query
+    {
+      template< typename... T_COMPONENTS >
       struct must
       {
         using type = std::tuple<T_COMPONENTS...>;
       };
 
-      template< typename T_COMPONENTS >
+      template< typename... T_COMPONENTS >
       struct one_of
       {
         using type = std::tuple<T_COMPONENTS...>;
       };
 
-      template< typename T_COMPONENTS >
+      template< typename... T_COMPONENTS >
       struct none_of
       {
         using type = std::tuple<T_COMPONENTS...>;
@@ -31,15 +38,16 @@ namespace Engine
       Bitset<2>    m_NoneOf;
 
       template<typename T>
-      void SetQueryType(query& q)
+      void SetQueryType()
       {
+        auto test = Engine::Component::component_info_v<T>;
         if constexpr (std::is_pointer_v<T>)
         {
-          q.m_OneOf.Set(Engine::Component::component_info_v<T>.m_UID);
+          m_OneOf.Set(Engine::Component::component_info_v<std::remove_pointer_t<T>>.m_UID);
         }
         else if constexpr (std::is_reference_v<T>)
         {
-          q.m_Must.Set(Engine::Component::component_info_v<T>.m_UID);
+          m_Must.Set(Engine::Component::component_info_v<std::remove_reference_t<T>>.m_UID);
         }
         else
         {
@@ -50,37 +58,43 @@ namespace Engine
       template<typename T_Function>
       void GenerateQueryFromFunction(T_Function&& func)
       {
-        using func_traits = xcore::function::traits<T_Function>;
-        [&] <typename... T_Components>(std::tuple<T_Components...>*)
+        // concept testing that it has operator()
+        constexpr bool fn = Is_Func<T_Function>;
+        if constexpr (fn)
         {
-          (SetQueryType<T_Components>, ...);
+          using func_traits = xcore::function::traits<T_Function>;
+          [&] <typename... T_Components>(std::tuple<T_Components...>*)
+          {
+            (SetQueryType<T_Components>(), ...);
+          }
+          (reinterpret_cast<func_traits::args_tuple*>(nullptr));
         }
-        (reinterpret_cast<func_traits::args_tuple*>(nullptr));
-
       }
-      /*
+      
+      
       template<typename... T_Queries>
       void SetFromTuple(std::tuple<T_Queries...>*)
       {
         // T is a templateised type that has a variadic template pack
-        auto F = [&]<template<typename ...>class T, typename ... T_Component>( T *)
+        auto func = [&]<template<typename ...>class T, typename ... T_Component>(T<T_Component...>*)
+        {
+          if constexpr (std::is_same_v<T<T_Component...>, Query::one_of<T_Component...>>)
           {
-            if constexpr (std::is_same_v<T,ecs::query::must>)
-            {
-              (m_Must.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
-            }
-            else if constexpr (std::is_same_v<T, ecs::query::one_of>)
-            {
-              (m_OneOf.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
-            }
-            else
-            {
-              (m_None.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
-            }
+            (m_OneOf.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
           }
-        (F(reinterpret_cast<T_Queries*>(nullptr)), ...);
+          else if constexpr (std::is_same_v<T<T_Component...>, Query::must<T_Component...>>)
+          {
+            (m_Must.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
+          }
+          else if constexpr (std::is_same_v<T<T_Component...>, Query::none_of<T_Component...>>)
+          {
+            (m_NoneOf.Set(Engine::Component::component_info_v<T_Component>.m_UID), ...);
+          }
+          else // fail in compilation
+            static_assert(false);
+        };
+        (func(reinterpret_cast<T_Queries*>(nullptr)), ...);
       }
-      */
 
       bool Compare(const Bitset<2>& ArchetypeBits) const noexcept
       {

@@ -10,6 +10,24 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{4271a478-0cde-4e0f-b62f-b885bf803ec6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{93dd6cca-6ef6-4426-a9f1-779ce38ff718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GraphicsCore">
+      <UniqueIdentifier>{dcbac4b3-4b52-47bf-a8f4-55e9e83ad543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GraphicsRenderer">
+      <UniqueIdentifier>{a3f0bdb1-a2b9-4c2a-9361-3aaa129e3979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Mesh">
+      <UniqueIdentifier>{fb376810-d6e0-4444-981e-1680d1f007bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shader">
+      <UniqueIdentifier>{bdfca405-f83c-4b37-b7dd-939248031178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Sprite">
+      <UniqueIdentifier>{6d67844d-356e-461d-b7a7-6f5e60945b93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComponentManager.cpp">
@@ -34,6 +52,40 @@
     <ClCompile Include="..\dependencies\xcore\src\xcore.cpp">
       <Filter>Dependencies</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\GraphicSystem.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ShaderReset.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GraphicsCore\VertexArrayObject.cpp">
+      <Filter>Graphics\GraphicsCore</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GraphicsRenderer\GraphicsRenderer.cpp">
+      <Filter>Graphics\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shaders\BasicShader.cpp">
+      <Filter>Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shaders\ShaderAttachment.cpp">
+      <Filter>Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shaders\ShaderManager.cpp">
+      <Filter>Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shaders\UniformBuffer.cpp">
+      <Filter>Graphics\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Sprite\Sprite.cpp">
+      <Filter>Graphics\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Sprite\SpriteHandler.cpp">
+      <Filter>Graphics\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\WinWrapper.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Query.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityManager.h">
@@ -68,6 +120,39 @@
     </ClInclude>
     <ClInclude Include="..\dependencies\tracy\Tracy.hpp">
       <Filter>Dependencies</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GraphicSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ShaderReset.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GraphicsCore\VertexArrayObject.h">
+      <Filter>Graphics\GraphicsCore</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\GraphicsRenderer\GraphicsRenderer.h">
+      <Filter>Graphics\GraphicsRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Mesh\Mesh.h">
+      <Filter>Graphics\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\BasicShader.h">
+      <Filter>Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\ShaderAttachment.h">
+      <Filter>Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shaders\UniformBuffer.h">
+      <Filter>Graphics\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Sprite\Sprite.h">
+      <Filter>Graphics\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Sprite\SpriteHandler.h">
+      <Filter>Graphics\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\WinWrapper.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

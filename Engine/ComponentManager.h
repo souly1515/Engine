@@ -32,7 +32,7 @@ namespace Engine
 		// std::decay -> remove keyword const if needed
 		// this will create multiple references to the same structure
 		template <typename T>
-		constexpr auto& component_info_v = Component::Details::template info_v<std::decay<T>>;
+		constexpr auto& component_info_v = Component::Details::template info_v<std::remove_pointer_t<std::remove_reference_t<std::decay<T>>>>;
 
 		template <typename T>
 		static constexpr int& bitOffset_v = component_info_v<T>.m_UID;

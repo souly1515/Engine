@@ -5,7 +5,6 @@
 #include <Windows.h>
 
 
-#include "MetaHelpers.h"
 #include "Entity.h"
 #include "../dependencies/xcore/src/xcore.h"
 
@@ -19,7 +18,7 @@ namespace Engine
 
     struct Chunk
     {
-      char* data;
+      char* data = nullptr;
       Chunk();
       virtual ~Chunk();
     };
@@ -33,55 +32,6 @@ namespace Engine
     template<typename  COMPONENT>
     struct Chunk_Impl : public Chunk
     {
-      // dont need this anymore
-      //static std::unique_ptr<ChunkComponentInfo[]> m_componentInfo;
-
-      /*
-      template<typename C>
-      constexpr uint32_t GetOffSet(size_t sizeofChunk)
-      {
-        // compile time assert
-        static_assert(sizeof...(C) > 0);
-
-        static constexpr std::array align{ alignof(C) ... };
-        static constexpr std::array size{ sizeof(C) ... };
-
-        static constexpr size_t minSize = Sum<sizeof(C)...>;
-
-        //constexpr size_t maxAlign = std::max(align);
-
-        // what % of the max size would the total size take
-        //constexpr float eleMultiplier = (sizeof(C) / alignof(C) + 1) * alignof(C) / maxAlign + ...;
-
-        // start from largest possible and 
-        // move down from there
-        for (int i = sizeofChunk / minSize; i > 0; --i)
-        {
-          int nK = 0;
-          for (auto k = 0; k < sizeof...(C); ++k)
-          {
-            // get alignment between blocks
-            int blockAlign = 0;
-
-            // if its the last block then there would be no alignment needs
-            if ((k + 1) < sizeof...(C))
-              // there is an assumption here
-              // where there would be no padding if the
-              // alignment for the next block is smaller then the current 1
-              // which would be fine if all alignment is pow of 2s 1,2,4,8,16 etc
-              blockAlign = (align[k + 1] - align[k]) > 0 ? (align[k + 1] - align[k]) : 0;
-
-
-            nK += ((size[k] / align[k]) + 1) * i + blockAlign;
-          }
-
-          if (nK < sizeofChunk)
-            return i;
-        }
-        return -1;
-      }
-      */
-
       ChunkIndex endIndex = 0;
 
       uint64_t CommitedMemory = 0;
@@ -113,7 +63,7 @@ namespace Engine
       // returns index id
       ChunkIndex AddEntity()
       {
-        while (endIndex * compSize >= CommitedMemory)
+        while ((endIndex + 1) * compSize >= CommitedMemory)
         {
           VirtualAlloc(data + CommitedMemory, SingleCommitSize, MEM_COMMIT, PAGE_READWRITE);
           CommitedMemory += SingleCommitSize;
@@ -121,12 +71,21 @@ namespace Engine
         return endIndex++;
       }
 
-      void RemoveEntity(ChunkIndex index)
+      ChunkIndex RemoveEntity(ChunkIndex index)
       {
         //swap the components here
         // since they are references they will swap the contents of the pointers
         // as well
-        std::swap(GetComponent(index), GetComponent(--endIndex));
+        auto& comp = GetComponent(index);
+        if (index == --endIndex)
+        {
+          comp.~COMPONENT();
+          return index;
+        }
+        auto& end = GetComponent(endIndex);
+        std::swap(comp, end);
+        end.~COMPONENT();
+        return endIndex;
       }
 
 
@@ -136,10 +95,17 @@ namespace Engine
       }
     };
 
-
     template<typename Component>
     struct Archetype_Intermediate
     {
+      ~Archetype_Intermediate()
+      {
+        for (unsigned i = 0; i < chunk.endIndex; ++i)
+        {
+          GetComponent(i).~Component();
+        }
+      }
+
       Chunk_Impl<Component> chunk;
       ChunkIndex AddEntity_helper()
       {
@@ -150,53 +116,33 @@ namespace Engine
       {
         return chunk.GetComponent(index);
       }
+
+      ChunkIndex RemoveEntity(ChunkIndex index)
+      {
+        return chunk.RemoveEntity(index);
+      }
     };
-    /*
-    namespace details
-    {
-      template<typename Component, typename Archetype_t, typename = std::enable_if_t<std::negation_v<std::is_pointer<Component>::type>>>
-      Component& GetComponent(Archetype_t& archetype, ChunkIndex index)
-      {
-        return archetype.GetComponent(index);
-      }
 
-      template<typename Component, typename Archetype_t,
-        std::enable_if_t<std::is_base_of_v<Archetype_Intermediate<Component>, Archetype_t>, bool> = true,
-        std::enable_if_t<std::is_pointer_v<Component>, bool> = true>
-        Component* GetComponent(Archetype_Intermediate<Component>& archetype, ChunkIndex index)
-      {
-        return &archetype->GetComponent(index);
-      }
-
-      template<typename Component, typename Archetype_t,
-        typename = std::enable_if_t<std::negation_v<typename std::is_base_of<Archetype_Intermediate<Component>, Archetype_t>::type>>,
-        typename = std::enable_if_t<std::is_pointer_v<Component>>>
-        Component* GetComponent(Archetype_Intermediate<Component>& archetype, ChunkIndex index)
-      {
-        return nullptr;
-      }
-
-    }
-    */
     struct Archetype
     {
       size_t entityNum = 0;
       virtual ~Archetype() = default;
       
       template<typename Component, typename = std::enable_if_t<std::negation_v<std::is_pointer<Component>::type>>>
-      Component& GetComponent(ChunkIndex index)
+      std::decay_t<Component>& GetComponent(ChunkIndex index)
       {
         return dynamic_cast<Archetype_Intermediate<std::decay_t<Component>>*>(this)
           ->GetComponent(index);
       }
 
       template<typename Component, typename = std::enable_if_t<std::is_pointer_v<Component>>>
-      Component* GetComponent(ChunkIndex index)
+      std::remove_pointer_t<std::decay_t<Component>>* GetComponent(ChunkIndex index)
       {
-        auto* temp = dynamic_cast<Archetype_Intermediate<std::decay_t<Component>>*>(this);
+        auto* temp = dynamic_cast<Archetype_Intermediate<std::remove_pointer_t<std::decay_t<Component>>>*>(this);
 
         if(temp)
           return &temp->GetComponent(index);
+
         return nullptr;
       }
 
@@ -218,10 +164,11 @@ namespace Engine
           RunWithFunctor(func, i, reinterpret_cast<func_traits::args_tuple*>(nullptr));
         }
       }
+      virtual ChunkIndex RemoveEntity(ChunkIndex index) = 0;
     };
 
     template<typename... COMPONENTS>
-    struct Archetype_Impl : public Archetype, public Archetype_Intermediate<COMPONENTS>...
+    struct Archetype_Impl : public Archetype, public Archetype_Intermediate<EntityComponent>, public Archetype_Intermediate<COMPONENTS>...
     {
     private:
 
@@ -260,6 +207,18 @@ namespace Engine
     public:
       //std::tuple<Chunk_Impl<COMPONENTS>...> chunkList;
 
+      virtual ChunkIndex RemoveEntity(ChunkIndex index) override
+      {
+        ChunkIndex idx = index;
+        if constexpr (sizeof...(COMPONENTS) > 0)
+        {
+          idx = (dynamic_cast<Archetype_Intermediate<EntityComponent>*>(this)->RemoveEntity(index));
+          (dynamic_cast<Archetype_Intermediate<COMPONENTS>*>(this)->RemoveEntity(index),...);
+        }
+        --entityNum;
+        return idx;
+      }
+
       Archetype_Impl()
       {
       }
@@ -270,44 +229,12 @@ namespace Engine
       {
         if constexpr (sizeof...(COMPONENTS) > 0)
         {
-          return AddEntity_helper<0, COMPONENTS...>();
+          return AddEntity_helper<0, EntityComponent, COMPONENTS...>();
         }
         // no components so no index
         return 0;
       }
-
-      void RemoveEntity(size_t index_to_remove)
-      {
-        //remove entity from chunk;
-
-        --entityNum;
-      }
     };
 
-    template<>
-    struct Archetype_Impl <> : public Archetype
-    {
-      Archetype_Impl()
-      {
-      }
-
-      size_t firstEmptyChunk = 0;
-
-      ChunkIndex AddEntity()
-      {
-        // no components so no index
-        return 0;
-      }
-
-      void RemoveEntity(size_t index_to_remove)
-      {
-        // nothing to do as there are no components
-      }
-    };
-
-    template<>
-    struct Archetype_Impl <void> : public Archetype_Impl <>
-    {
-    };
   }
 }

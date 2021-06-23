@@ -15,11 +15,14 @@ namespace Engine
 
 			Bitset()
 			{
-
+				for (auto& d : data)
+					d = 0;
 			}
 
 			Bitset(uint32_t offset)
 			{
+				for (auto& d : data)
+					d = 0;
 				Set(offset);
 			}
 

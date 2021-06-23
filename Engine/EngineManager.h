@@ -10,10 +10,11 @@ namespace Engine
 {
 	class EngineManager
 	{
+	public:
 		EntityManager::EntityManager EntMan;
 		Component::ComponentManager CompMan;
 		System::details::SystemManager SysMan;
-	public:
+
 		template<typename T_COMPONENT>
 		void RegisterComponent(void) noexcept
 		{
@@ -28,7 +29,14 @@ namespace Engine
 
 		Entity CloneEntity(Entity entity);
 
-		void RunSystems();
+		void Run();
+
+		~EngineManager();
+
+		void RunSystemOnce();
+
+		void Init(_In_ HINSTANCE hInstance,
+			_In_ int       nCmdShow);
 
 
 		template<typename COMPONENT>
@@ -48,6 +56,11 @@ namespace Engine
 		COMPONENT& GetComponent(Entity entity)
 		{
 			return EntMan.GetComponent<COMPONENT>(entity);;
+		}
+		template<typename COMPONENT>
+		std::decay_t<COMPONENT>* TryGetComponent(Entity entity)
+		{
+			return EntMan.TryGetComponent<COMPONENT>(entity);;
 		}
 	};
 }
