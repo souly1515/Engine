@@ -44,3 +44,6 @@
 *.recipe
 *.ilk
 .vs
+*.iobj
+*.ipdb
+*.res

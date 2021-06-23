@@ -1,6 +1,6 @@
 
 #define ZSTD_STATIC_LINKING_ONLY
-#include "../../dependencies/zstd/lib/zstd.h"
+#include "../dependencies/zstd/lib/zstd.h"
 
 //-------------------------------------------------------------------------------------------------------
 // Add libz libraries
