@@ -149,7 +149,7 @@ namespace Engine
 				return info.ent;
 			}
 
-			void RemoveEntity(Entity ent);
+			void DeleteEntity(Entity ent);
 
 			void UpdateStructuralComponents();
 

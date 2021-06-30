@@ -4,14 +4,21 @@
 
 namespace Engine
 {
+  namespace EntityManager
+  {
+    class EntityManager;
+  }
   namespace Tools
   {
-    template<typename T>
-    concept Is_Func = requires
+    namespace details
     {
-      T::operator();
-    };
+      template <typename T>
+      concept has_Execute = requires(T & t, Engine::EntityManager::EntityManager & GM)
+      {
+        t.Execute(GM);
+      };
 
+    }
 
     struct Query
     {
@@ -59,8 +66,10 @@ namespace Engine
       void GenerateQueryFromFunction(T_Function&& func)
       {
         // concept testing that it has operator()
-        constexpr bool fn = Is_Func<T_Function>;
-        if constexpr (fn)
+        constexpr bool fn = details::has_Execute<T_Function>;
+        // if it does not have an execute then do this
+        // cause i would need a query for operator()
+        if constexpr (!fn)
         {
           using func_traits = xcore::function::traits<T_Function>;
           [&] <typename... T_Components>(std::tuple<T_Components...>*)

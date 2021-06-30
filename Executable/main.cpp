@@ -32,7 +32,7 @@ struct Sys1
 	{
 		std::cout << "sys1 " << ++count << std::endl;
 		a.a += 1;
-		b.d += 2;
+		b.d += 1;
 	}
 };
 
@@ -42,8 +42,8 @@ struct Sys2
 	void operator()(B& b, C& c)
 	{
 		std::cout << "sys2 " << ++count << std::endl;
-		b.a += 5;
-		c.b += 23;
+		b.a += 1;
+		c.b += 1;
 	}
 };
 
@@ -53,8 +53,23 @@ struct Sys3
 	void operator()(B& b, D& d)
 	{
 		std::cout << "sys3 " << ++count << std::endl;
-		b.a += 5;
-		d.a[0] += 23;
+		b.a += 1;
+		d.a[0] += 1;
+	}
+};
+struct Sys4
+{
+	int count = 0;
+	void operator()()
+	{
+		std::cout << "sys4 " << ++count << std::endl;
+	}
+};
+struct Sys5
+{
+	void Execute(Engine::EntityManager::EntityManager&)
+	{
+		std::cout << "custom execute" << std::endl;
 	}
 };
 
@@ -72,6 +87,8 @@ int main(int argc, char* argv[])
 	engineMan.RegisterSystem<Sys1>();
 	engineMan.RegisterSystem<Sys2>();
 	engineMan.RegisterSystem<Sys3>();
+	engineMan.RegisterSystem<Sys4>();
+	engineMan.RegisterSystem<Sys5>();
 
 	Entity entity[20];
 	for (int i = 0; i < 20; ++i)
@@ -89,16 +106,16 @@ int main(int argc, char* argv[])
 		C& c = engineMan.GetComponent<C>(entity[i]);
 		D* d = engineMan.TryGetComponent<D>(entity[i]);
 
-		a.a = i * 5;
-		a.b = 20 - i * 2;
+		a.a = i;
+		a.b = 20 - i;
 		
 		b.a = i;
 		b.b = 20 - i;
-		b.c = i * 1.2f;
-		b.d = i * 15;
+		b.c = i * 0.5f;
+		b.d = i;
 
-		c.a = i * 2.2f;
-		c.b = i * 12;
+		c.a = i * 0.5f;
+		c.b = i;
 		
 		for (int j = 0; j < 200; ++j)
 		{
@@ -106,6 +123,10 @@ int main(int argc, char* argv[])
 				d->a[j] = j + i;
 		}
 	}
+
+	//engineMan.DeleteEntity(entity[4]);
+	//engineMan.DeleteEntity(entity[5]);
+	//engineMan.DeleteEntity(entity[10]);
 
 	engineMan.RunSystemOnce();
 

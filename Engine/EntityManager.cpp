@@ -74,7 +74,7 @@ Entity_details::EntityInfo& Engine::EntityManager::EntityDB::CreateEntity()
 void Engine::EntityManager::EntityDB::DeleteEntity(Entity entity)
 {
 	auto& info = GetEntityInfo(entity);
-	auto movedIdx = info.archetype->RemoveEntity(info.index);
+	auto movedIdx = info.archetype->DeleteEntity(info.index);
 	if (movedIdx != info.index)
 	{
 		Entity movedEntity = info.archetype->GetComponent<EntityComponent>(info.index).entity;
@@ -110,7 +110,7 @@ Engine::ArchetypeVector Engine::EntityManager::EntityManager::Search(const Tools
 	return Engine::ArchetypeVector{ res };
 }
 
-void Engine::EntityManager::EntityManager::RemoveEntity(Entity ent)
+void Engine::EntityManager::EntityManager::DeleteEntity(Entity ent)
 {
 	auto info = m_dataBase.GetEntityInfo(ent);
 	ent = info.archetype->GetComponent<EntityComponent>(info.index).entity = m_dataBase.ToggleZombie(ent);

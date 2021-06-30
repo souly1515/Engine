@@ -62,5 +62,7 @@ namespace Engine
 		{
 			return EntMan.TryGetComponent<COMPONENT>(entity);;
 		}
+
+		void DeleteEntity(Entity entity);
 	};
 }

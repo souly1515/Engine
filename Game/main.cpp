@@ -187,7 +187,7 @@ struct BulletBehaviour
 			bul.lifeLeft -= dt;
 			if (bul.lifeLeft <= 0)
 			{
-				GM.RemoveEntity(*itr);
+				GM.DeleteEntity(*itr);
 				continue;
 			}
 
@@ -205,8 +205,8 @@ struct BulletBehaviour
 
 				if (distx * distx + disty * disty <= 10 * 10)
 				{
-					GM.RemoveEntity(*itr);
-					GM.RemoveEntity(*itr2);
+					GM.DeleteEntity(*itr);
+					GM.DeleteEntity(*itr2);
 					// destroy bullet
 					// destroy ship
 

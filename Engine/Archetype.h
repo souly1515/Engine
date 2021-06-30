@@ -71,7 +71,7 @@ namespace Engine
         return endIndex++;
       }
 
-      ChunkIndex RemoveEntity(ChunkIndex index)
+      ChunkIndex DeleteEntity(ChunkIndex index)
       {
         //swap the components here
         // since they are references they will swap the contents of the pointers
@@ -117,9 +117,9 @@ namespace Engine
         return chunk.GetComponent(index);
       }
 
-      ChunkIndex RemoveEntity(ChunkIndex index)
+      ChunkIndex DeleteEntity(ChunkIndex index)
       {
-        return chunk.RemoveEntity(index);
+        return chunk.DeleteEntity(index);
       }
     };
 
@@ -164,7 +164,7 @@ namespace Engine
           RunWithFunctor(func, i, reinterpret_cast<func_traits::args_tuple*>(nullptr));
         }
       }
-      virtual ChunkIndex RemoveEntity(ChunkIndex index) = 0;
+      virtual ChunkIndex DeleteEntity(ChunkIndex index) = 0;
     };
 
     template<typename... COMPONENTS>
@@ -207,13 +207,13 @@ namespace Engine
     public:
       //std::tuple<Chunk_Impl<COMPONENTS>...> chunkList;
 
-      virtual ChunkIndex RemoveEntity(ChunkIndex index) override
+      virtual ChunkIndex DeleteEntity(ChunkIndex index) override
       {
         ChunkIndex idx = index;
         if constexpr (sizeof...(COMPONENTS) > 0)
         {
-          idx = (dynamic_cast<Archetype_Intermediate<EntityComponent>*>(this)->RemoveEntity(index));
-          (dynamic_cast<Archetype_Intermediate<COMPONENTS>*>(this)->RemoveEntity(index),...);
+          idx = (dynamic_cast<Archetype_Intermediate<EntityComponent>*>(this)->DeleteEntity(index));
+          (dynamic_cast<Archetype_Intermediate<COMPONENTS>*>(this)->DeleteEntity(index),...);
         }
         --entityNum;
         return idx;

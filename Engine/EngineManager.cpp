@@ -54,3 +54,8 @@ void Engine::EngineManager::Init(_In_ HINSTANCE hInstance,
 
   GraphicSystem* gs = GraphicSystem::GetInstance();
 }
+
+void Engine::EngineManager::DeleteEntity(Entity entity)
+{
+  EntMan.DeleteEntity(entity);
+}
