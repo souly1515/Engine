@@ -62,7 +62,7 @@ BasicShader::BasicShader(const BasicShader& rhs):
 {
 }
 
-BasicShader::BasicShader(std::shared_ptr<const ShaderProgram> prog):
+BasicShader::BasicShader(std::shared_ptr<ShaderProgram> prog):
   shaderProg{ prog }
 {
 }
@@ -72,9 +72,14 @@ BasicShader::~BasicShader()
 {
 }
 
-void BasicShader::SetProgram(std::shared_ptr<const ShaderProgram> prog)
+void BasicShader::SetProgram(std::shared_ptr<ShaderProgram> prog)
 {
   shaderProg = prog;
+}
+
+std::shared_ptr<ShaderProgram> BasicShader::GetProgram()
+{
+    return shaderProg;
 }
 
 void ShaderProgram::RegisterAttachment(ShaderAttachment attachment)

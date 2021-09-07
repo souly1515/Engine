@@ -1,6 +1,7 @@
 #pragma once
 #include "Bitset.h"
 #include "ComponentManager.h"
+#include "func_traits.h"
 
 namespace Engine
 {
@@ -71,7 +72,7 @@ namespace Engine
         // cause i would need a query for operator()
         if constexpr (!fn)
         {
-          using func_traits = xcore::function::traits<T_Function>;
+          using func_traits = Engine::traits<T_Function>;
           [&] <typename... T_Components>(std::tuple<T_Components...>*)
           {
             (SetQueryType<T_Components>(), ...);

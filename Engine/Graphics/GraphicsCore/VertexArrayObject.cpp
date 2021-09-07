@@ -27,7 +27,7 @@ void VertexArrayObject::PushValue(float num)
   m_elementArray.push_back(num);//position
 }
 
-void VertexArrayObject::PushVertex(glm::vec3 pos, glm::vec4 color, glm::vec3 uv)
+void VertexArrayObject::PushVertex(glm::vec3 pos, glm::vec4 color, glm::vec3 uv, glm::vec3 norm)
 {
   m_elementArray.push_back(pos.x);//position
   m_elementArray.push_back(pos.y);//position
@@ -38,6 +38,9 @@ void VertexArrayObject::PushVertex(glm::vec3 pos, glm::vec4 color, glm::vec3 uv)
   m_elementArray.push_back(color[3]);//color
   m_elementArray.push_back(uv.x);//u
   m_elementArray.push_back(uv.y);//v
+  //m_elementArray.push_back(norm.x);//position
+  //m_elementArray.push_back(norm.y);//position
+  //m_elementArray.push_back(norm.z);//position
   ++m_numVertices;
 }
 

@@ -31,8 +31,7 @@ ShaderPtr GraphicSystem::ShaderManager::GetShader(ShaderName name) const
 {
   try
   {
-    auto temp = std::make_shared<BasicShader>(m_shaderMap.at(name));
-    return temp;
+    return m_shaderMap.at(name);
   }
   catch (std::out_of_range)
   {
@@ -44,7 +43,7 @@ ShaderPtr GraphicSystem::ShaderManager::LoadShader(Filename vertexSource,
   Filename fragmentSource, ShaderName name, std::vector<ShaderAttachment> attachmentList)
 {
   LoadShaderNoRet(vertexSource, fragmentSource, name, attachmentList);
-  return std::make_shared<BasicShader>(m_shaderMap.at(name));
+  return m_shaderMap.at(name);
 }
 
 void GraphicSystem::ShaderManager::LoadShaderNoRet(Filename vertexSource, 
@@ -53,7 +52,7 @@ void GraphicSystem::ShaderManager::LoadShaderNoRet(Filename vertexSource,
   ShaderProg shader;
   try
   {
-    shader = m_shaderMap.at(name);
+    shader = m_shaderMap.at(name)->GetProgram();
   }
   catch (std::out_of_range)
   {
@@ -84,11 +83,11 @@ void GraphicSystem::ShaderManager::LoadShaderNoRet(Filename vertexSource,
 
   shader->SetShaderName(name);
 
-  RegisterShader(shader, name);
+  RegisterShader(std::make_shared<BasicShader>(shader), name);
 }
 
 
-void GraphicSystem::ShaderManager::RegisterShader(ShaderProg shader, ShaderName name)
+void GraphicSystem::ShaderManager::RegisterShader(ShaderPtr shader, ShaderName name)
 {
   m_shaderMap[name] = shader;
   m_reverseMap[shader] = name;
@@ -97,19 +96,21 @@ void GraphicSystem::ShaderManager::RegisterShader(ShaderProg shader, ShaderName 
 
 GraphicSystem::ShaderManager::~ShaderManager()
 {
-  std::for_each(begin(m_shaderMap), end(m_shaderMap), [](std::pair<ShaderName, ShaderProg> shader)
+  std::for_each(begin(m_shaderMap), end(m_shaderMap), [](std::pair<ShaderName, ShaderPtr> shader)
     {
-      shader.second->Clean();
-      shader.second.reset();
+      shader.second->GetProgram()->Clean();
     });
+
+  m_shaderMap.clear();
+  m_reverseMap.clear();
 }
 
 void GraphicSystem::ShaderManager::ReloadShaders()
 {
   std::for_each(std::begin(m_shaderMap), std::end(m_shaderMap),
-    [](std::pair<ShaderName, ShaderProg> shader)
+    [](std::pair<ShaderName, ShaderPtr> shader)
     {
-      if (shader.second->Setup())
+      if (shader.second->GetProgram()->Setup())
       {
         std::string log = "built shader ";
         log += shader.first;
@@ -151,7 +152,7 @@ std::string  GraphicSystem::ShaderManager::GetName(ShaderPtr shader)
 {
   auto itr = std::find_if(std::begin(m_reverseMap), std::end(m_reverseMap), [&shader](auto it)
     {
-      return ((static_cast<ShaderProg>(it.first)->GetProgramID()) == shader->GetProgramId());
+      return ((static_cast<ShaderPtr>(it.first)->GetProgramId()) == shader->GetProgramId());
     });
   if(itr != m_reverseMap.end())
     return itr->second;

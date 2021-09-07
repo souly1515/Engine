@@ -3,6 +3,7 @@
 #include "Graphics/GraphicSystem.h"
 #include "Graphics/Sprite/Sprite.h"
 #include <chrono>
+#include "Logger.h"
 
 Entity Engine::EngineManager::CloneEntity(Entity entity)
 {
@@ -40,6 +41,7 @@ void Engine::EngineManager::RunSystemOnce()
 void Engine::EngineManager::Init(_In_ HINSTANCE hInstance,
   _In_ int       nCmdShow)
 {
+  Logger* log = Logger::GetInstance();
   WinWrapper* winp = WinWrapper::GetInstance();
   //winp->wndProcPtr = ImGui_ImplWin32_WndProcHandler;
 
@@ -50,9 +52,15 @@ void Engine::EngineManager::Init(_In_ HINSTANCE hInstance,
 #endif 
 
   winp->SetupWindows(hInstance, nCmdShow, alloc);
+
+
   SetWindowLongPtr(winp->GetInstance()->GetHWND(), GWLP_WNDPROC, (LONG_PTR)winp->GetInstance()->wndProcPtr);
 
+  log->Log("Window instance initialised");
+
   GraphicSystem* gs = GraphicSystem::GetInstance();
+
+  log->Log("Graphics instance initialised");
 }
 
 void Engine::EngineManager::DeleteEntity(Entity entity)

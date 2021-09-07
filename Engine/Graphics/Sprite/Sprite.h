@@ -40,10 +40,16 @@ public:
   //SpriteShaderData m_shaderData;
 
   Sprite() = default;
+  Sprite(Sprite && rhs) = default;
+  Sprite(const Sprite & rhs) = default;
   Sprite(BasicShader::ShaderPtr shader,
     std::shared_ptr<Mesh> mesh, TextureID textureID);
   Sprite(std::shared_ptr<Sprite> sprite);
   ~Sprite();
+
+  Sprite& operator=(Sprite&& rhs) = default;
+  Sprite& operator=(const Sprite & rhs) = default;
+
   void Draw();
   void SetShader();
 

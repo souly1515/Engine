@@ -74,7 +74,7 @@ private:
 
 	void InitVerticesData();
 
-	const GLint m_numberOfElementsPerVertex = { 9 }; //position = (3 floats)   +   4 color + 2 uv = (9 floats)
+	const GLint m_numberOfElementsPerVertex = { 9 }; //position = (3 floats)   +   4 color + 2 uv + 3 norm = (12 floats)
 
 	BasicShader FBOShader;
 
@@ -86,8 +86,8 @@ private:
     using ShaderProg = std::shared_ptr<ShaderProgram>;
 		using Filename = std::string;
 	private:
-		std::map <ShaderName, ShaderProg> m_shaderMap;
-		std::map <ShaderProg, ShaderName> m_reverseMap;
+		std::map <ShaderName, ShaderPtr> m_shaderMap;
+		std::map <ShaderPtr, ShaderName> m_reverseMap;
 
     std::map <UniformBuffer::UniformName, std::shared_ptr<UniformBuffer>> m_uniformBufferMap;
 
@@ -111,7 +111,7 @@ private:
       ShaderName name, 
       std::vector<ShaderAttachment> attachmentList = std::vector<ShaderAttachment>{}); // load a shader from a file
 		
-    void RegisterShader(ShaderProg shader, ShaderName name);
+    void RegisterShader(ShaderPtr shader, ShaderName name);
 		void ReloadShaders();
 
 		friend class GraphicSystem;
@@ -128,6 +128,7 @@ public:
   void ToggleVSYNC();
 
 	std::shared_ptr<Mesh> m_squareMesh;
+	std::shared_ptr<Mesh> m_coneMesh;
 
 	std::shared_ptr<Mesh> m_debugSquareMesh;
 	std::shared_ptr<Mesh> m_debugCircleMesh;

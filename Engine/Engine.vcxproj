@@ -143,7 +143,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../dependencies/xcore/src;$(SolutionDir)dependencies;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
     </ClCompile>
@@ -168,7 +168,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>../dependencies/xcore/src;$(SolutionDir)dependencies;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnableModules>true</EnableModules>
     </ClCompile>
@@ -187,7 +187,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\dependencies\tracy\Tracy.hpp" />
     <ClInclude Include="Archetype.h" />
     <ClInclude Include="Bitset.h" />
     <ClInclude Include="ComponentManager.h" />
@@ -195,6 +194,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityHelper.h" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="func_traits.h" />
     <ClInclude Include="Graphics\GraphicsCore\VertexArrayObject.h" />
     <ClInclude Include="Graphics\GraphicsRenderer\GraphicsRenderer.h" />
     <ClInclude Include="Graphics\GraphicSystem.h" />
@@ -206,12 +206,12 @@
     <ClInclude Include="Graphics\Sprite\Sprite.h" />
     <ClInclude Include="Graphics\Sprite\SpriteHandler.h" />
     <ClInclude Include="Graphics\WinWrapper.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MetaHelpers.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="System.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\dependencies\xcore\src\xcore.cpp" />
     <ClCompile Include="Archetype.cpp" />
     <ClCompile Include="Bitset.cpp" />
     <ClCompile Include="ComponentManager.cpp" />
@@ -229,6 +229,7 @@
     <ClCompile Include="Graphics\Sprite\Sprite.cpp" />
     <ClCompile Include="Graphics\Sprite\SpriteHandler.cpp" />
     <ClCompile Include="Graphics\WinWrapper.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="System.cpp" />
   </ItemGroup>

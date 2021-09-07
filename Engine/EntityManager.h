@@ -8,6 +8,7 @@
 #include <deque>
 #include <memory>
 #include <vector>
+#include "Logger.h"
 
 namespace Engine
 {
@@ -146,6 +147,14 @@ namespace Engine
 				info.archetype = dyn;
 				info.index = index;
 				dyn->GetComponent<EntityComponent>(index).entity = info.ent;
+
+				if constexpr (Logger::LogEnabled())
+				{
+					Logger* log = Logger::GetInstance();
+					std::string data = "Creating entity with index: " +
+						std::to_string(index)+ "\n";
+					log->Log(data);
+				}
 				return info.ent;
 			}
 

@@ -29,7 +29,7 @@ public:
  
   void PushValue(float num);
 
-  void PushVertex(glm::vec3 pos, glm::vec4 color, glm::vec3 uv);
+  void PushVertex(glm::vec3 pos, glm::vec4 color, glm::vec3 uv, glm::vec3 norm);
 
   void Clear();
 

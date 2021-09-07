@@ -140,7 +140,8 @@ GraphicSystem::GraphicSystem():
 	worldHeightMod { 1.f / worldHeight },
 	m_squareMesh { std::make_shared<Mesh>() },
 	m_debugSquareMesh { std::make_shared<Mesh>() },
-	m_debugCircleMesh { std::make_shared<Mesh>() },
+	m_debugCircleMesh{ std::make_shared<Mesh>() },
+	m_coneMesh{ std::make_shared<Mesh>() },
   usingDefaultCamera{ true }
 {
 	InitializeRenderingEnvironment();
@@ -177,7 +178,14 @@ GraphicSystem::GraphicSystem():
 	glGenBuffers(1, &m_debugCircleMesh->VBOref);
 	glGenBuffers(1, &m_debugCircleMesh->EBOref);
 
-  BindBuffers(*m_squareMesh);
+	glGenVertexArrays(1, &m_coneMesh->VAOref);
+	glGenBuffers(1, &m_coneMesh->VBOref);
+	glGenBuffers(1, &m_coneMesh->EBOref);
+
+	BindBuffers(*m_squareMesh);
+	BindBuffers(*m_debugSquareMesh);
+	BindBuffers(*m_debugCircleMesh);
+	BindBuffers(*m_coneMesh);
 
 	//TexMan.LoadAllTexturesFromFile();
 
@@ -198,37 +206,113 @@ void GraphicSystem::InitVerticesData()
 	m_squareMesh->VAO.m_elementPerVertex = 9;
 	//P0
 	m_squareMesh->VAO.PushVertex(
-		{ -0.5f, -0.5f, 1.0f }, // position
+		{ -0.5f, -0.5f, 0.5f }, // position
 		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
-		{ 0.0f, 0.0f, 0.0f }); // uv
+		{ 0.0f, 0.0f, 0.0f },// uv
+		{-1, -1, 1});// norm
 
 	//P1
 	m_squareMesh->VAO.PushVertex(
-		{ 0.5f, -0.5f, 1.0f }, // position
+		{ 0.5f, -0.5f, 0.5f }, // position
 		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
-		{ 1.0f, 0.0f, 0.0f }); // uv
+		{ 1.0f, 0.0f, 0.0f },// uv
+		{ 1, -1, 1 });// norm
 
 	//P2					
 	m_squareMesh->VAO.PushVertex(
-		{ 0.5f, 0.5f, 1.0f }, // position
+		{ 0.5f,  0.5f, 0.5f }, // position
 		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
-		{ 1.0f, 1.0f, 0.0f }); // uv  
+		{ 1.0f, 1.0f, 0.0f },// uv
+		{ 1, 1, 1 });// norm
 
 	//P3
 	m_squareMesh->VAO.PushVertex(
-		{ -0.5f, 0.5f, 1.0f }, // position
+		{ -0.5f,  0.5f, 0.5f }, // position
 		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
-		{ 0.0f, 1.0f, 0.0f }); // uv  
+		{ 0.0f, 1.0f, 0.0f },// uv
+		{ -1, 1, 1 });// norm
+
+	m_squareMesh->VAO.PushVertex(
+		{ -0.5f, -0.5f, -0.5f }, // position
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+		{ 0.0f, 1.0f, 0.0f },// uv
+		{ -1, -1, -1 });// norm 
+
+	m_squareMesh->VAO.PushVertex(
+		{ 0.5f, -0.5f, -0.5f }, // position
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+		{ 0.0f, 1.0f, 0.0f },// uv
+		{ 1, -1, -1 });// norm 
+
+	m_squareMesh->VAO.PushVertex(
+		{ 0.5f, 0.5f, -0.5f }, // position
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+		{ 0.0f, 1.0f, 0.0f },// uv
+		{ 1, 1, -1 });// norm 
+
+	m_squareMesh->VAO.PushVertex(
+		{ -0.5f, 0.5f, -0.5f }, // position
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+		{ 0.0f, 1.0f, 0.0f },// uv
+		{ -1, 1, -1 });// norm 
+
 
 	*m_debugSquareMesh = *m_squareMesh;
-	
+	{
+		// front
+		m_squareMesh->IA.push_back(0);
+		m_squareMesh->IA.push_back(1);
+		m_squareMesh->IA.push_back(2);
 
-	m_squareMesh->IA.push_back(0);
-	m_squareMesh->IA.push_back(1);
-	m_squareMesh->IA.push_back(2);
-	m_squareMesh->IA.push_back(0);
-	m_squareMesh->IA.push_back(2);
-	m_squareMesh->IA.push_back(3);
+		m_squareMesh->IA.push_back(2);
+		m_squareMesh->IA.push_back(3);
+		m_squareMesh->IA.push_back(0);
+
+		// right
+		m_squareMesh->IA.push_back(1);
+		m_squareMesh->IA.push_back(5);
+		m_squareMesh->IA.push_back(6);
+
+		m_squareMesh->IA.push_back(6);
+		m_squareMesh->IA.push_back(2);
+		m_squareMesh->IA.push_back(1);
+
+		// back
+		m_squareMesh->IA.push_back(7);
+		m_squareMesh->IA.push_back(6);
+		m_squareMesh->IA.push_back(5);
+
+		m_squareMesh->IA.push_back(5);
+		m_squareMesh->IA.push_back(4);
+		m_squareMesh->IA.push_back(7);
+
+		// left
+		m_squareMesh->IA.push_back(4);
+		m_squareMesh->IA.push_back(0);
+		m_squareMesh->IA.push_back(3);
+
+		m_squareMesh->IA.push_back(3);
+		m_squareMesh->IA.push_back(7);
+		m_squareMesh->IA.push_back(4);
+
+		// bottom
+		m_squareMesh->IA.push_back(4);
+		m_squareMesh->IA.push_back(5);
+		m_squareMesh->IA.push_back(1);
+
+		m_squareMesh->IA.push_back(1);
+		m_squareMesh->IA.push_back(0);
+		m_squareMesh->IA.push_back(4);
+
+		// top
+		m_squareMesh->IA.push_back(3);
+		m_squareMesh->IA.push_back(2);
+		m_squareMesh->IA.push_back(6);
+
+		m_squareMesh->IA.push_back(6);
+		m_squareMesh->IA.push_back(7);
+		m_squareMesh->IA.push_back(3);
+	}
 	m_squareMesh->drawMode = GL_TRIANGLES;
 
 	m_debugSquareMesh->IA.push_back(0);
@@ -236,6 +320,25 @@ void GraphicSystem::InitVerticesData()
 	m_debugSquareMesh->IA.push_back(2);
 	m_debugSquareMesh->IA.push_back(3);
 	m_debugSquareMesh->IA.push_back(0);
+
+	m_debugSquareMesh->IA.push_back(4);
+	m_debugSquareMesh->IA.push_back(7);
+	m_debugSquareMesh->IA.push_back(3);
+
+	m_debugSquareMesh->IA.push_back(2);
+	m_debugSquareMesh->IA.push_back(6);
+	m_debugSquareMesh->IA.push_back(7);
+
+
+	m_debugSquareMesh->IA.push_back(4);
+	m_debugSquareMesh->IA.push_back(5);
+	m_debugSquareMesh->IA.push_back(6);
+
+
+	m_debugSquareMesh->IA.push_back(5);
+	m_debugSquareMesh->IA.push_back(1);
+
+
 	m_debugSquareMesh->drawMode = GL_LINE_STRIP;
 
 	for (int i = 0; i < 20; i++)
@@ -244,11 +347,36 @@ void GraphicSystem::InitVerticesData()
 		m_debugCircleMesh->VAO.PushVertex(
 			{ cosf(theta) * 1.f, sinf(theta) * 1.f, 1.0f }, // position
 			{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
-			{ 1.0f, 1.0f, 0.0f }); // uv  
+			{ 1.0f, 1.0f, 0.0f },// uv
+			{ 0, 0, 1 });// norm
 		m_debugCircleMesh->IA.push_back(i);
 	}
 	m_debugCircleMesh->IA.push_back(0);
 	m_debugCircleMesh->drawMode = GL_LINE_STRIP;
+
+
+	m_coneMesh->VAO.PushVertex(
+		{ 0.5f, 0, 0.0f }, // position
+		{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+		{ 0.0f, 0.0f, 0.0f },// uv
+		{ 1, 0, 0 });// norm
+	//m_coneMesh->IA.push_back(0);
+
+	for (int i = 1; i <= 20; i++)
+	{
+		float theta = i * 6.28f * 0.05f; // * 0.05 = / 20
+		m_coneMesh->VAO.PushVertex(
+			{ -0.5f, cosf(theta) * 0.25f, sinf(theta) * 0.25f}, // position
+			{ 1.0f, 1.0f, 1.0f, 1.0f }, // color
+			{ 1.0f, 1.0f, 0.0f },// uv
+			{ 0, cosf(theta), sinf(theta) });// norm
+		//*
+		m_coneMesh->IA.push_back(i);
+		m_coneMesh->IA.push_back((i) % 20 + 1); // i - 1(to remove the central element) + 1 ( get next ele) % 20 + 1 (put back central ele)
+		m_coneMesh->IA.push_back(0);
+		//*/
+	}
+	m_coneMesh->drawMode = GL_TRIANGLES;
 }
 
 GraphicSystem::~GraphicSystem()
@@ -290,6 +418,7 @@ void GraphicSystem::BindBuffers(const Mesh& mesh)
 	//can be defined elsewhere
 	GLint numberOfElementsPerPosition = 3;
 	GLint numberOfElementsPerColor = 4;
+	GLint num_Elements_UV = 2;
 
 	glBindVertexArray(mesh.VAOref);
 
@@ -317,9 +446,15 @@ void GraphicSystem::BindBuffers(const Mesh& mesh)
 
 	//
 	stride = numberOfElementsPerColor + numberOfElementsPerPosition;
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE,
+	glVertexAttribPointer(2, num_Elements_UV, GL_FLOAT, GL_TRUE,
 		m_numberOfElementsPerVertex * sizeof(GLfloat), (GLvoid*)(stride * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
+	/*
+	stride += num_Elements_UV;
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_TRUE,
+		m_numberOfElementsPerVertex * sizeof(GLfloat), (GLvoid*)(stride * sizeof(GLfloat)));
+	glEnableVertexAttribArray(3);
+	*/
 }
 
 void GraphicSystem::Update()

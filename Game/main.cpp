@@ -10,9 +10,9 @@
 // will probably use real dt when i have time to deal with that
 float dt = 0.016f;
 constexpr float shipIdle = 0.125;
-constexpr float bulletLife = 20;
+constexpr float bulletLife = 10;
 constexpr float bulletSpeed = 30;
-constexpr float shipSpeed = 10;
+constexpr float shipSpeed = 20;
 constexpr float shipShootRange = 100;
 
 
@@ -63,7 +63,7 @@ void CreateBullet(Engine::EntityManager::EntityManager& EM, Position& shipPos, P
 	spr.m_shader = GraphicSystem::GetInstance()->ShaderMan.GetShader("default");
 }
 
-void CreateShip(Engine::EntityManager::EntityManager& EM)
+Entity CreateShip(Engine::EntityManager::EntityManager& EM)
 {
 	auto ent = EM.AddEntity<Position, Sprite, Ship, Velocity>();
 
@@ -78,6 +78,8 @@ void CreateShip(Engine::EntityManager::EntityManager& EM)
 	ship.timeIdleLeft = shipIdle;
 	spr.m_mesh = GraphicSystem::GetInstance()->m_squareMesh;
 	spr.m_shader = GraphicSystem::GetInstance()->ShaderMan.GetShader("default");
+	
+	return ent;
 }
 
 struct UpdateMovement
@@ -334,8 +336,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	engineMan.RegisterSystem< Render>();
 	engineMan.RegisterSystem< SwapBuffer>();
 
-	for(int i = 0; i < 30; ++i)
+	//Entity ent[30];
+
+	for (int i = 0; i < 300; ++i)
 		CreateShip(engineMan.EntMan);
+
+	
 
 	engineMan.Run();
 

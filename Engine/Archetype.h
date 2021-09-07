@@ -6,7 +6,8 @@
 
 
 #include "Entity.h"
-#include "../dependencies/xcore/src/xcore.h"
+//#include "../dependencies/xcore/src/xcore.h"
+#include "func_traits.h"
 
 namespace Engine
 {
@@ -32,6 +33,7 @@ namespace Engine
     template<typename  COMPONENT>
     struct Chunk_Impl : public Chunk
     {
+      // pointing to the 1 past end index
       ChunkIndex endIndex = 0;
 
       uint64_t CommitedMemory = 0;
@@ -156,7 +158,7 @@ namespace Engine
       void RunWithFunctor(Functor& func)
       {
         // get the type of arguments
-        using func_traits = xcore::function::traits<Functor>;
+        using func_traits = Engine::traits<Functor>;
 
         for (int i = 0; i < entityNum; ++i)
         {

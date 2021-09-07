@@ -28,7 +28,7 @@ namespace Engine
       template< typename user_system >
       struct CompletedSystem final :  SystemBase
       {
-        using func_traits = xcore::function::traits<user_system>;
+        using func_traits = Engine::traits<user_system>;
         Tools::Query m_Query;
         user_system us;
         

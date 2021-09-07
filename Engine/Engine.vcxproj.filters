@@ -7,9 +7,6 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{32104def-8d26-4516-b530-43f4fc683878}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies">
-      <UniqueIdentifier>{4271a478-0cde-4e0f-b62f-b885bf803ec6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Graphics">
       <UniqueIdentifier>{93dd6cca-6ef6-4426-a9f1-779ce38ff718}</UniqueIdentifier>
     </Filter>
@@ -49,9 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="System.cpp" />
-    <ClCompile Include="..\dependencies\xcore\src\xcore.cpp">
-      <Filter>Dependencies</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\GraphicSystem.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -86,6 +80,7 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Query.cpp" />
+    <ClCompile Include="Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityManager.h">
@@ -117,9 +112,6 @@
     </ClInclude>
     <ClInclude Include="Query.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\dependencies\tracy\Tracy.hpp">
-      <Filter>Dependencies</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\GraphicSystem.h">
       <Filter>Graphics</Filter>
@@ -154,5 +146,7 @@
     <ClInclude Include="Graphics\WinWrapper.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="func_traits.h" />
+    <ClInclude Include="Logger.h" />
   </ItemGroup>
 </Project>

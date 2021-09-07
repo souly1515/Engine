@@ -71,15 +71,16 @@ class BasicShader
 {
 protected:
 
-  std::shared_ptr<const ShaderProgram> shaderProg;
+  std::shared_ptr<ShaderProgram> shaderProg;
 
 public:
   BasicShader();
   BasicShader(const BasicShader& rhs);
-  BasicShader(std::shared_ptr<const ShaderProgram> prog);
+  BasicShader(std::shared_ptr<ShaderProgram> prog);
   ~BasicShader();
 
-  void SetProgram(std::shared_ptr<const ShaderProgram> prog);
+  void SetProgram(std::shared_ptr<ShaderProgram> prog);
+  std::shared_ptr<ShaderProgram> GetProgram();
 
   bool operator== (const BasicShader& rhs) const;
   bool operator!= (const BasicShader& rhs) const;

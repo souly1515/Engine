@@ -1,4 +1,7 @@
 #include "EntityManager.h"
+#include "Logger.h"
+#include <algorithm>
+#include <string>
 
 using namespace Engine::EntityManager;
 using namespace Engine;
@@ -54,36 +57,98 @@ Entity_details::EntityInfo& EntityDB::GetEntityInfo(Entity entity)
 
 Entity_details::EntityInfo& Engine::EntityManager::EntityDB::CreateEntity()
 {
+	if constexpr (Logger::LogEnabled())
+	{
+		Logger* log = Logger::GetInstance();
+		std::string data = "current head of free: " +
+			std::to_string(headOfFree) + "\n";
+		log->Log(data);
+	}
 	Entity temp = headOfFree;
-	auto& info = GetEntityInfo(temp);
-	auto index = ExtractIndex(info.ent);
+	auto& info = GetEntityInfo(temp); // gets the entity data from the head's index
+	auto index = ExtractIndex(info.ent); // gets the index to the infoList 
+	// if its a valid index then it means its a dead entity
+	// so reuse this entity info
 	if (index)
 	{
-		headOfFree = index;
+		headOfFree = info.ent;
+		if constexpr (Logger::LogEnabled())
+		{
+			Logger* log = Logger::GetInstance();
+			std::string data = "Creating Entity(orignially dead) from Archetype: " + 
+				std::to_string((unsigned long)info.archetype.get()) + "\n";
+			log->Log(data);
+			data = "new head of free is " + std::to_string(headOfFree) + "\n";
+			log->Log(data);
+		}
+
 	}
 	else
 	{
-		SetIndex(headOfFree, ExtractIndex(headOfFree) + 1);
+		SetIndex(headOfFree, headOfFree + 1);
+
+		if constexpr (Logger::LogEnabled())
+		{
+			Logger* log = Logger::GetInstance();
+			std::string data = "Creating Entity(new) from Archetype: " +
+				std::to_string((unsigned long)info.archetype.get()) + "\n";
+			log->Log(data);
+		}
 	}
-	ResetZombie(info.ent);
-	SetIndex(info.ent, ExtractIndex(temp));
+	ResetZombie(temp);
+	SetIndex(temp, temp);
 	IncrementGeneration(info.ent);
+	if constexpr (Logger::LogEnabled())
+	{
+		Logger* log = Logger::GetInstance();
+		std::string data = "Final Entity Generated: " +
+			std::to_string(info.ent) + "\n";
+		auto t = GetEntityInfo(headOfFree);
+		data += "Next Free is " + std::to_string(t.ent) + "\n";
+		log->Log(data);
+	}
 	return info;
 }
 
 void Engine::EntityManager::EntityDB::DeleteEntity(Entity entity)
 {
+
 	auto& info = GetEntityInfo(entity);
 	auto movedIdx = info.archetype->DeleteEntity(info.index);
+	
+	if constexpr (Logger::LogEnabled())
+	{
+		Logger* log = Logger::GetInstance();
+		std::string data = "Deleting from Archetype: " + std::to_string((unsigned long)info.archetype.get()) + " Entity: " + std::to_string(info.ent) + " Index: " + std::to_string(info.index) + "\n";
+		log->Log(data);
+	}
+
+	// not the last entity in the archetype
 	if (movedIdx != info.index)
 	{
 		Entity movedEntity = info.archetype->GetComponent<EntityComponent>(info.index).entity;
 		auto& movedInfo = GetEntityInfo(movedEntity);
+
+		if constexpr (Logger::LogEnabled())
+		{
+			Logger* log = Logger::GetInstance();
+			std::string data = "Swapping Deleted Entity with Entity: " + std::to_string(movedInfo.ent) + " Index: " + std::to_string(movedInfo.index) + "\n";
+			log->Log(data);
+		}
+
 		movedInfo.index = info.index;
 	}
 
-	SetIndex(info.ent, ExtractIndex(headOfFree));
+	info.ent = headOfFree;
 	headOfFree = entity;
+	if constexpr (Logger::LogEnabled())
+	{
+		Logger* log = Logger::GetInstance();
+		std::string data = "Setting Head of free to be: " + std::to_string(headOfFree) + "\n";
+		data += "next free would be: " + std::to_string(info.ent) + "\n";
+		log->Log(data);
+	}
+	
 }
 
 Engine::EntityManager::EntityDB::EntityDB() :
