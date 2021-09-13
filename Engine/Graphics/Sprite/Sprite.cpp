@@ -31,6 +31,8 @@ Sprite::Sprite(std::shared_ptr<Sprite> sprite) : Sprite(*sprite)
 
 Sprite::~Sprite()
 {
+  m_shader.reset();
+  m_mesh.reset();
 }
 
 void Sprite::Draw()

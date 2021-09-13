@@ -26,6 +26,7 @@ which is used to hold and draw objects
 #include <functional>
 
 #include "SpriteHandler.h"
+#include <string>
 
 class Sprite
 {
@@ -64,4 +65,19 @@ public:
   void SetTexture(TextureID TexID);
 
   std::shared_ptr<Mesh> GetMesh() const;
+
+  void Validate()
+  {
+    if (m_shader)
+      m_shader->GetProgram()->GetProgramID();
+    if (m_mesh)
+      *m_mesh;
+  }
+
+  std::string GetLogData()
+  {
+    return "m_shader->program use count: " + std::to_string(m_shader->GetProgram().use_count()) + "\nm_shaderuse count: " +
+      std::to_string(m_shader.use_count()) + "\n";
+  }
+
 };

@@ -3,6 +3,7 @@
 #include <deque>
 #include <cassert>
 #include <Windows.h>
+#include "Logger.h"
 
 
 #include "Entity.h"
@@ -29,6 +30,17 @@ namespace Engine
       size_t size_of_struct;
       size_t offset_from_base;
     };
+    template <typename T>
+    concept has_Validate = requires(T & t)
+    {
+      t.Validate();
+    };
+    template <typename T>
+    concept has_LogFunc = requires(T & t)
+    {
+      t.GetLogData();
+    };
+
 
     template<typename  COMPONENT>
     struct Chunk_Impl : public Chunk
@@ -75,18 +87,54 @@ namespace Engine
 
       ChunkIndex DeleteEntity(ChunkIndex index)
       {
+        constexpr bool temp = has_Validate<COMPONENT>;
+        constexpr bool hasLogging = has_LogFunc<COMPONENT>;
         //swap the components here
         // since they are references they will swap the contents of the pointers
         // as well
         auto& comp = GetComponent(index);
+
+#ifdef _DEBUG
+        std::string logData;
+        if constexpr (temp)
+          comp.Validate();
+#endif
         if (index == --endIndex)
         {
+#ifdef _DEBUG
+          if constexpr (hasLogging)
+          {
+            logData = comp.GetLogData();
+            Logger::GetInstance()->Log(logData);
+          }
+#endif
           comp.~COMPONENT();
           return index;
         }
         auto& end = GetComponent(endIndex);
+#ifdef _DEBUG
+        if constexpr (temp)
+          end.Validate();
+#endif
         std::swap(comp, end);
+
+
+#ifdef _DEBUG
+        if constexpr (temp)
+          comp.Validate();
+        if constexpr (hasLogging)
+        {
+          logData = comp.GetLogData();
+          Logger::GetInstance()->Log(logData);
+        }
+#endif
         end.~COMPONENT();
+#ifdef _DEBUG
+        if constexpr (temp)
+          comp.Validate();
+#endif
+
+
         return endIndex;
       }
 
