@@ -1,6 +1,6 @@
 /******************************************************************************/
 /*!
-\file ShaderReset.h
+\file ShaderReset.cpp
 \author Kennard Kee
 \par Email: kennard.kee\@digipen.edu
 \par DigiPen login: kennard.kee
@@ -9,17 +9,22 @@
 \par        All content © 2019 DigiPen (SINGAPORE) Corporation,
             all rights reserved.
 \brief
-This holds the declaration for a class that will reset shaders
+This holds the implementation for a class that will reset shaders 
 within the graphics system
 */
 /******************************************************************************/
-#include "GraphicSystem.h"
+#include "ShaderReset.h"
 
-class ShaderReset
+
+GraphicsSystem_OpenGL* ShaderReset::gs = nullptr;
+
+void ShaderReset::ResetShader()
 {
-private:
-  static GraphicSystem* gs;
-public:
-  static void ResetShader();
-  static void SetGraphicSystem(GraphicSystem* ngs);
-};
+  gs = GraphicsSystem_OpenGL::GetInstance();
+  gs->ShaderMan.ReloadShaders();
+}
+
+void ShaderReset::SetGraphicSystem(GraphicsSystem_OpenGL* ngs)
+{
+  gs = ngs;
+}

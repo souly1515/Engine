@@ -14,7 +14,7 @@ which is used to hold and draw objects
 */
 /******************************************************************************/
 #include "Sprite.h"
-#include "Graphics/GraphicSystem.h"
+#include "../GraphicSystem.h"
 
 
 Sprite::Sprite(BasicShader::ShaderPtr shader,
@@ -37,24 +37,6 @@ Sprite::~Sprite()
 
 void Sprite::Draw()
 {
-  /*
-  if (m_shader)
-  {
-    m_shader->Start();
-
-    //TransformComponent& trans = ecs.GetComponent<TransformComponent>(entity);
-    m_shader->SetMat("transform", trans.GetMatrix());
-    m_shader->SetFloat("rotation", trans._rotationX);
-    m_shader->SetMat("worldTrans", GraphicSystem::GetWorldTrans());
-    //m_shader->SetInt("curPosX", m_currentSpritePos.x());
-    //m_shader->SetInt("curPosY", m_currentSpritePos.y());
-    //m_shader->SetInt("TextureSizeX", m_spriteSize.x());
-    //m_shader->SetInt("TextureSizeY", m_spriteSize.y());
-    //trans._position.z() = trans._position.y();
-    m_shader->SetVariables();
-
-  }
-  */
   //glBindTexture(GL_TEXTURE_2D, m_textureID);
   glBindVertexArray(m_mesh->VAOref);
   glDrawElements(m_mesh->drawMode, static_cast<GLsizei>(m_mesh->IA.size()), GL_UNSIGNED_INT, 0);
@@ -72,7 +54,7 @@ BasicShader::ShaderPtr Sprite::GetShader() const
 
 std::string Sprite::GetShaderName() const
 {
-  return GraphicSystem::GetInstance()->ShaderMan.GetName(m_shader);
+  return GraphicsSystem_OpenGL::GetInstance()->ShaderMan.GetName(m_shader);
 }
 
 void Sprite::SetShader(BasicShader::ShaderPtr shader)
@@ -82,7 +64,7 @@ void Sprite::SetShader(BasicShader::ShaderPtr shader)
 
 void Sprite::SetShader(std::string shader)
 {
-  SetShader(GraphicSystem::GetInstance()->ShaderMan.GetShader(shader));
+  SetShader(GraphicsSystem_OpenGL::GetInstance()->ShaderMan.GetShader(shader));
 }
 
 typename Sprite::TextureID Sprite::GetTextureID() const

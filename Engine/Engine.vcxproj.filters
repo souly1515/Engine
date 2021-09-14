@@ -8,22 +8,25 @@
       <UniqueIdentifier>{32104def-8d26-4516-b530-43f4fc683878}</UniqueIdentifier>
     </Filter>
     <Filter Include="Graphics">
+      <UniqueIdentifier>{8639c954-2541-4738-a429-04a997de481c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Graphics_Vulkan">
+      <UniqueIdentifier>{be71e263-2509-4061-a854-3f30ab1122ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Graphics_OpenGL">
       <UniqueIdentifier>{93dd6cca-6ef6-4426-a9f1-779ce38ff718}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\GraphicsCore">
-      <UniqueIdentifier>{dcbac4b3-4b52-47bf-a8f4-55e9e83ad543}</UniqueIdentifier>
+    <Filter Include="Graphics\Graphics_OpenGL\Shader">
+      <UniqueIdentifier>{5d85cf34-6640-41b4-ba96-0c0ee582499c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\GraphicsRenderer">
-      <UniqueIdentifier>{a3f0bdb1-a2b9-4c2a-9361-3aaa129e3979}</UniqueIdentifier>
+    <Filter Include="Graphics\Graphics_OpenGL\Mesh">
+      <UniqueIdentifier>{4f2fbaba-202c-4afe-8ada-47463aa0aec4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\Mesh">
-      <UniqueIdentifier>{fb376810-d6e0-4444-981e-1680d1f007bb}</UniqueIdentifier>
+    <Filter Include="Graphics\Graphics_OpenGL\Sprite">
+      <UniqueIdentifier>{c562dff8-82fa-44d6-b8e9-91a31262f897}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\Shader">
-      <UniqueIdentifier>{bdfca405-f83c-4b37-b7dd-939248031178}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Sprite">
-      <UniqueIdentifier>{6d67844d-356e-461d-b7a7-6f5e60945b93}</UniqueIdentifier>
+    <Filter Include="Graphics\Graphics_OpenGL\GraphicsCore">
+      <UniqueIdentifier>{7f6c1307-74c4-4b44-957e-d4e4b0b7629f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,41 +49,41 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="System.cpp" />
-    <ClCompile Include="Graphics\GraphicSystem.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\ShaderReset.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\GraphicsCore\VertexArrayObject.cpp">
-      <Filter>Graphics\GraphicsCore</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\GraphicsRenderer\GraphicsRenderer.cpp">
-      <Filter>Graphics\GraphicsRenderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Shaders\BasicShader.cpp">
-      <Filter>Graphics\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Shaders\ShaderAttachment.cpp">
-      <Filter>Graphics\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Shaders\ShaderManager.cpp">
-      <Filter>Graphics\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Shaders\UniformBuffer.cpp">
-      <Filter>Graphics\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Sprite\Sprite.cpp">
-      <Filter>Graphics\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Sprite\SpriteHandler.cpp">
-      <Filter>Graphics\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\WinWrapper.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Graphics\OpenGL\GraphicSystem.cpp">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\ShaderReset.cpp">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\WinWrapper.cpp">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Shaders\BasicShader.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Shaders\ShaderAttachment.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Shaders\UniformBuffer.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Shaders\ShaderManager.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Sprite\Sprite.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\Sprite\SpriteHandler.cpp">
+      <Filter>Graphics\Graphics_OpenGL\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\OpenGL\GraphicsCore\VertexArrayObject.cpp">
+      <Filter>Graphics\Graphics_OpenGL\GraphicsCore</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GraphicsSystem.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityManager.h">
@@ -113,40 +116,40 @@
     <ClInclude Include="Query.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GraphicSystem.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\ShaderReset.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\GraphicsCore\VertexArrayObject.h">
-      <Filter>Graphics\GraphicsCore</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\GraphicsRenderer\GraphicsRenderer.h">
-      <Filter>Graphics\GraphicsRenderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Mesh\Mesh.h">
-      <Filter>Graphics\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Shaders\BasicShader.h">
-      <Filter>Graphics\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Shaders\ShaderAttachment.h">
-      <Filter>Graphics\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Shaders\UniformBuffer.h">
-      <Filter>Graphics\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Sprite\Sprite.h">
-      <Filter>Graphics\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Sprite\SpriteHandler.h">
-      <Filter>Graphics\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\WinWrapper.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="func_traits.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="GraphicsSystem.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\GraphicSystem.h">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\ShaderReset.h">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\WinWrapper.h">
+      <Filter>Graphics\Graphics_OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Shaders\BasicShader.h">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Shaders\ShaderAttachment.h">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Shaders\UniformBuffer.h">
+      <Filter>Graphics\Graphics_OpenGL\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Mesh\Mesh.h">
+      <Filter>Graphics\Graphics_OpenGL\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Sprite\Sprite.h">
+      <Filter>Graphics\Graphics_OpenGL\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\Sprite\SpriteHandler.h">
+      <Filter>Graphics\Graphics_OpenGL\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\OpenGL\GraphicsCore\VertexArrayObject.h">
+      <Filter>Graphics\Graphics_OpenGL\GraphicsCore</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

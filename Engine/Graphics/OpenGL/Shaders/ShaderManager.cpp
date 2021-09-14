@@ -23,11 +23,11 @@ Which is meant to handle shader management, such as distributing of shaders from
 
 
 
-using ShaderPtr = GraphicSystem::ShaderPtr;
-using ShaderName = GraphicSystem::ShaderName;
-using Filename = GraphicSystem::Filename;
+using ShaderPtr = GraphicsSystem_OpenGL::ShaderPtr;
+using ShaderName = GraphicsSystem_OpenGL::ShaderName;
+using Filename = GraphicsSystem_OpenGL::Filename;
 
-ShaderPtr GraphicSystem::ShaderManager::GetShader(ShaderName name) const
+ShaderPtr GraphicsSystem_OpenGL::ShaderManager::GetShader(ShaderName name) const
 {
   try
   {
@@ -39,14 +39,14 @@ ShaderPtr GraphicSystem::ShaderManager::GetShader(ShaderName name) const
   }
 }
 
-ShaderPtr GraphicSystem::ShaderManager::LoadShader(Filename vertexSource,
+ShaderPtr GraphicsSystem_OpenGL::ShaderManager::LoadShader(Filename vertexSource,
   Filename fragmentSource, ShaderName name, std::vector<ShaderAttachment> attachmentList)
 {
   LoadShaderNoRet(vertexSource, fragmentSource, name, attachmentList);
   return m_shaderMap.at(name);
 }
 
-void GraphicSystem::ShaderManager::LoadShaderNoRet(Filename vertexSource, 
+void GraphicsSystem_OpenGL::ShaderManager::LoadShaderNoRet(Filename vertexSource, 
   Filename fragmentSource, ShaderName name, std::vector<ShaderAttachment> attachmentList)
 {
   ShaderProg shader;
@@ -87,14 +87,14 @@ void GraphicSystem::ShaderManager::LoadShaderNoRet(Filename vertexSource,
 }
 
 
-void GraphicSystem::ShaderManager::RegisterShader(ShaderPtr shader, ShaderName name)
+void GraphicsSystem_OpenGL::ShaderManager::RegisterShader(ShaderPtr shader, ShaderName name)
 {
   m_shaderMap[name] = shader;
   m_reverseMap[shader] = name;
 }
 
 
-GraphicSystem::ShaderManager::~ShaderManager()
+GraphicsSystem_OpenGL::ShaderManager::~ShaderManager()
 {
   std::for_each(begin(m_shaderMap), end(m_shaderMap), [](std::pair<ShaderName, ShaderPtr> shader)
     {
@@ -105,7 +105,7 @@ GraphicSystem::ShaderManager::~ShaderManager()
   m_reverseMap.clear();
 }
 
-void GraphicSystem::ShaderManager::ReloadShaders()
+void GraphicsSystem_OpenGL::ShaderManager::ReloadShaders()
 {
   std::for_each(std::begin(m_shaderMap), std::end(m_shaderMap),
     [](std::pair<ShaderName, ShaderPtr> shader)
@@ -119,7 +119,7 @@ void GraphicSystem::ShaderManager::ReloadShaders()
     });
 }
 
-void GraphicSystem::ShaderManager::CreateUniformBuffer(UniformBuffer::UniformName name)
+void GraphicsSystem_OpenGL::ShaderManager::CreateUniformBuffer(UniformBuffer::UniformName name)
 {
   std::shared_ptr<UniformBuffer> buffer;
   buffer = std::make_shared<UniformBuffer>(m_NextBindPoint);
@@ -129,12 +129,12 @@ void GraphicSystem::ShaderManager::CreateUniformBuffer(UniformBuffer::UniformNam
 }
 
 
-void GraphicSystem::ShaderManager::InitBasicShaders()
+void GraphicsSystem_OpenGL::ShaderManager::InitBasicShaders()
 {
   //LoadShaderNoRet("BatchVertexShader.glsl", "BatchFragmentShader.glsl", "default");
 }
 
-void GraphicSystem::ShaderManager::SetUniformBufferData(UniformBuffer::UniformName name, GLvoid* data, size_t size)
+void GraphicsSystem_OpenGL::ShaderManager::SetUniformBufferData(UniformBuffer::UniformName name, GLvoid* data, size_t size)
 {
   auto itr = m_uniformBufferMap.find(name);
   if (itr != m_uniformBufferMap.end())
@@ -148,7 +148,7 @@ void GraphicSystem::ShaderManager::SetUniformBufferData(UniformBuffer::UniformNa
   }
 }
 
-std::string  GraphicSystem::ShaderManager::GetName(ShaderPtr shader)
+std::string  GraphicsSystem_OpenGL::ShaderManager::GetName(ShaderPtr shader)
 {
   auto itr = std::find_if(std::begin(m_reverseMap), std::end(m_reverseMap), [&shader](auto it)
     {

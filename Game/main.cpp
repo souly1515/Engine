@@ -3,8 +3,8 @@
 #include <random>
 #include "MetaHelpers.h"
 #include "EngineManager.h"
-#include "Graphics/GraphicSystem.h"
-#include "Graphics/Sprite/Sprite.h"
+#include "Graphics/OpenGL/GraphicSystem.h"
+#include "Graphics/OpenGL/Sprite/Sprite.h"
 
 // using fixed dt
 // will probably use real dt when i have time to deal with that
@@ -59,8 +59,8 @@ void CreateBullet(Engine::EntityManager::EntityManager& EM, Position& shipPos, P
 	vel.y = dir.y * bulletSpeed;
 	bullet.lifeLeft = bulletLife;
 	bullet.owner = owner;
-	spr.m_mesh = GraphicSystem::GetInstance()->m_squareMesh;
-	spr.m_shader = GraphicSystem::GetInstance()->ShaderMan.GetShader("default");
+	spr.m_mesh = GraphicsSystem_OpenGL::GetInstance()->m_squareMesh;
+	spr.m_shader = GraphicsSystem_OpenGL::GetInstance()->ShaderMan.GetShader("default");
 }
 
 Entity CreateShip(Engine::EntityManager::EntityManager& EM)
@@ -76,8 +76,8 @@ Entity CreateShip(Engine::EntityManager::EntityManager& EM)
 	vel.x = float(dis_negToPos(gen) * shipSpeed);
 	vel.y = float(dis_negToPos(gen) * shipSpeed);
 	ship.timeIdleLeft = shipIdle;
-	spr.m_mesh = GraphicSystem::GetInstance()->m_squareMesh;
-	spr.m_shader = GraphicSystem::GetInstance()->ShaderMan.GetShader("default");
+	spr.m_mesh = GraphicsSystem_OpenGL::GetInstance()->m_squareMesh;
+	spr.m_shader = GraphicsSystem_OpenGL::GetInstance()->ShaderMan.GetShader("default");
 	
 	return ent;
 }
@@ -222,7 +222,7 @@ struct BulletBehaviour
 
 struct Render
 {
-	GraphicSystem* gs = nullptr;
+	GraphicsSystem_OpenGL* gs = nullptr;
 	Engine::Tools::Query renderQuery;
 
 	Render()
@@ -234,7 +234,7 @@ struct Render
 	void Execute(Engine::EntityManager::EntityManager& GM)
 	{
 		if (!gs)
-			gs = GraphicSystem::GetInstance();
+			gs = GraphicsSystem_OpenGL::GetInstance();
 		gs->UpdateBegin();
 
 		auto archetypes = GM.Search(renderQuery);
@@ -247,7 +247,7 @@ struct Render
 			Bullet* bullet = GM.TryGetComponent<Bullet>(*itr);
 
 			// hack to get the sprite to stop crashing
-			spr.m_shader = GraphicSystem::GetInstance()->ShaderMan.GetShader("default");
+			spr.m_shader = GraphicsSystem_OpenGL::GetInstance()->ShaderMan.GetShader("default");
 
 			spr.SetShader();
 
@@ -297,11 +297,11 @@ struct Render
 
 struct SwapBuffer
 {
-	GraphicSystem* gs = nullptr;
+	GraphicsSystem_OpenGL* gs = nullptr;
 	void Execute(Engine::EntityManager::EntityManager& GM)
 	{
 		if (!gs)
-			gs = GraphicSystem::GetInstance();
+			gs = GraphicsSystem_OpenGL::GetInstance();
 		gs->UpdateEnd();
 	}
 };
@@ -319,7 +319,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Engine::EngineManager engineMan;
 
 	engineMan.Init(hInstance, nCmdShow);
-	GraphicSystem* gs = GraphicSystem::GetInstance();
+	GraphicsSystem_OpenGL* gs = GraphicsSystem_OpenGL::GetInstance();
 	gs->ShaderMan.LoadShader("Resources/VertexShader.glsl", "Resources/FragmentShader.glsl", "default");
 
 	engineMan.RegisterComponent<EntityComponent>();

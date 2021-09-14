@@ -1,6 +1,6 @@
 /******************************************************************************/
 /*!
-\file GraphicSystem.cpp
+\file GraphicsSystem_OpenGL.cpp
 \author Kennard Kee
 \par Email: kennard.kee\@digipen.edu
 \par DigiPen login: kennard.kee
@@ -9,15 +9,15 @@
 \par        All content © 2019 DigiPen (SINGAPORE) Corporation,
             all rights reserved.
 \brief
-This holds the implementation for GraphicSystem class
-GraphicSystem is needed for any graphics related APIs to work
+This holds the implementation for GraphicsSystem_OpenGL class
+GraphicsSystem_OpenGL is needed for any graphics related APIs to work
 it also holds managers to allow for easier access to graphics API around
 the engine
 */
 /******************************************************************************/
-#include "GraphicSystem.h"
+#include "Graphics/GraphicsSystem.h"
 
-#include "Graphics/WinWrapper.h"
+#include "WinWrapper.h"
 
 //#include "SOIL/SOIL.h"
 #include "glew/glew.h"
@@ -25,9 +25,8 @@ the engine
 
 #include "Sprite/Sprite.h"
 
-GraphicSystem* GraphicSystem::instance = nullptr;
 
-bool GraphicSystem::InitializeRenderingEnvironment()
+bool GraphicsSystem_OpenGL::InitializeRenderingEnvironment()
 {
 	//create rendering window
 	HWND mainHWND = WinWrapper::GetHWND();
@@ -89,7 +88,7 @@ bool GraphicSystem::InitializeRenderingEnvironment()
 	return true;
 }
 
-void GraphicSystem::CleanRenderingEnvironment()
+void GraphicsSystem_OpenGL::CleanRenderingEnvironment()
 {
 	HWND mainHWND = WinWrapper::GetHWND();
 	glDeleteVertexArrays(1, &m_squareMesh->VAOref);
@@ -125,13 +124,13 @@ void GraphicSystem::CleanRenderingEnvironment()
 
 }
 
-void GraphicSystem::SwapBuffers()
+void GraphicsSystem_OpenGL::SwapBuffers()
 {
 	::SwapBuffers(m_windowDC); //using double buffering
 }
 
 
-GraphicSystem::GraphicSystem():
+GraphicsSystem_OpenGL::GraphicsSystem_OpenGL():
 	m_windowDC { nullptr },
 	m_wglDC { nullptr },
 	worldWidth { 1280 },
@@ -145,9 +144,6 @@ GraphicSystem::GraphicSystem():
   usingDefaultCamera{ true }
 {
 	InitializeRenderingEnvironment();
-	//InitVerticesData_Programmable(m_totalNumberOfVertices, m_totalNumberOfTriangles, 
-	//	m_test.VAO.m_elementArray,
-	//	m_test.IA);
 
 	InitVerticesData();
 
@@ -155,7 +151,7 @@ GraphicSystem::GraphicSystem():
 	if (res != GLEW_OK)
 	{
 		//Log it
-		std::string error = "Failed to init GraphicSystem Error Code: ";
+		std::string error = "Failed to init GraphicsSystem_OpenGL Error Code: ";
 		error.append(std::to_string(res));
     //INF_CORE_ERROR(error);
 		return;
@@ -201,7 +197,7 @@ size_t constexpr indiceCalc(size_t vertexNum, size_t numElePerVertex, size_t ele
 }
 
 
-void GraphicSystem::InitVerticesData()
+void GraphicsSystem_OpenGL::InitVerticesData()
 {
 	m_squareMesh->VAO.m_elementPerVertex = 9;
 	//P0
@@ -379,41 +375,42 @@ void GraphicSystem::InitVerticesData()
 	m_coneMesh->drawMode = GL_TRIANGLES;
 }
 
-GraphicSystem::~GraphicSystem()
+GraphicsSystem_OpenGL::~GraphicsSystem_OpenGL()
 {
+	CleanRenderingEnvironment();
 }
 
-void GraphicSystem::SetWorldWidth(unsigned int width)
+void GraphicsSystem_OpenGL::SetWorldWidth(unsigned int width)
 {
 	worldWidth = width;
 	worldWidthMod = 1.f / width;
 }
 
-void GraphicSystem::SetWorldHeight(unsigned int height)
+void GraphicsSystem_OpenGL::SetWorldHeight(unsigned int height)
 {
 	worldHeight = height;
 	worldHeightMod = 1.f / height;
 }
 
-glm::mat4 GraphicSystem::GetWorldTrans()
+glm::mat4 GraphicsSystem_OpenGL::GetWorldTrans()
 {
 	glm::mat4 mat;
 	for (int i = 0; i < 4; ++i)
 	{
 		mat[i][i] = 1;
 	}
-	mat[0][0] = 2 * instance->worldWidthMod;
-	mat[1][1] = 2 * instance->worldHeightMod;
+	mat[0][0] = 2 * ((GraphicsSystem_OpenGL*)(m_gs))->worldWidthMod;
+	mat[1][1] = 2 * ((GraphicsSystem_OpenGL*)(m_gs))->worldHeightMod;
 	return mat;
 }
 
-GLuint GraphicSystem::GetVAO() const
+GLuint GraphicsSystem_OpenGL::GetVAO() const
 {
 	return m_squareMesh->VAOref;
 }
 
 
-void GraphicSystem::BindBuffers(const Mesh& mesh)
+void GraphicsSystem_OpenGL::BindBuffers(const Mesh& mesh)
 {
 	//can be defined elsewhere
 	GLint numberOfElementsPerPosition = 3;
@@ -457,13 +454,14 @@ void GraphicSystem::BindBuffers(const Mesh& mesh)
 	*/
 }
 
-void GraphicSystem::Update()
+void GraphicsSystem_OpenGL::Update()
 {
 	UpdateBegin();
 	
 	UpdateEnd();
 }
-void GraphicSystem::UpdateBegin()
+
+void GraphicsSystem_OpenGL::UpdateBegin()
 {
 	//update opengl
 	//if (Input::GetInstance()->IsKeyDown(INF_SPACE))
@@ -488,7 +486,7 @@ void GraphicSystem::UpdateBegin()
 		worldHeight);
 }
 
-void GraphicSystem::UpdateEnd(unsigned int flags)
+void GraphicsSystem_OpenGL::UpdateEnd(unsigned int flags)
 {
   if (flags & SWAPBUFFER)
   {
@@ -496,37 +494,27 @@ void GraphicSystem::UpdateEnd(unsigned int flags)
   }
 }
 
-void GraphicSystem::SetDebugDrawing()
+void GraphicsSystem_OpenGL::SetDebugDrawing()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void GraphicSystem::SetStandardDrawing()
+void GraphicsSystem_OpenGL::SetStandardDrawing()
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 
-GraphicSystem * GraphicSystem::GetInstance()
+GraphicsSystem_OpenGL * GraphicsSystem_OpenGL::GetInstance()
 {
-  if (!instance)
-  {
-    instance = new GraphicSystem();
-  }
-	return instance;
+	return dynamic_cast<GraphicsSystem_OpenGL*>(GraphicsSystem::GetInstance());
+}
+void GraphicsSystem_OpenGL::Exit()
+{
+	GraphicsSystem::Exit();
 }
 
-void GraphicSystem::Exit()
-{
-	if (instance)
-	{
-		instance->CleanRenderingEnvironment();
-		delete instance;
-		instance = nullptr;
-	}
-}
-
-void GraphicSystem::ToggleVSYNC()
+void GraphicsSystem_OpenGL::ToggleVSYNC()
 {
   enableVsync = !enableVsync;
   wglSwapIntervalEXT(enableVsync);

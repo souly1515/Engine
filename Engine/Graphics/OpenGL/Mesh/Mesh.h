@@ -14,7 +14,7 @@ This holds the struct Mesh which holds all the data relevent to building a mesh
 /******************************************************************************/
 #pragma once
 
-#include "Graphics/GraphicsCore/VertexArrayObject.h"
+#include "../GraphicsCore/VertexArrayObject.h"
 
 struct Mesh
 {

@@ -1,7 +1,7 @@
 #include "EngineManager.h"
-#include "Graphics/WinWrapper.h"
-#include "Graphics/GraphicSystem.h"
-#include "Graphics/Sprite/Sprite.h"
+#include "Graphics/OpenGL/WinWrapper.h"
+#include "Graphics/GraphicsSystem.h"
+#include "Graphics/OpenGL/Sprite/Sprite.h"
 #include <chrono>
 #include "Logger.h"
 
@@ -29,8 +29,9 @@ void Engine::EngineManager::Run()
 
 Engine::EngineManager::~EngineManager()
 {
-  GraphicSystem::Exit();
+  GraphicsSystem_OpenGL::Exit();
   WinWrapper::Exit();
+  Logger::Drop();
 }
 
 void Engine::EngineManager::RunSystemOnce()
@@ -58,7 +59,7 @@ void Engine::EngineManager::Init(_In_ HINSTANCE hInstance,
 
   log->Log("Window instance initialised");
 
-  GraphicSystem* gs = GraphicSystem::GetInstance();
+  GraphicsSystem_OpenGL* gs = GraphicsSystem_OpenGL::GetInstance();
 
   log->Log("Graphics instance initialised");
 }

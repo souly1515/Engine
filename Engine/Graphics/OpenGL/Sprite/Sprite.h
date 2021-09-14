@@ -19,9 +19,9 @@ which is used to hold and draw objects
 #define GLEW_STATIC 
 #include <memory>
 
-#include "Graphics/Mesh/Mesh.h"
-#include "Graphics/Shaders/BasicShader.h"
-#include "Graphics/GraphicSystem.h"
+#include "../Mesh/Mesh.h"
+#include "../Shaders/BasicShader.h"
+#include "../GraphicSystem.h"
 #include "glm/glm/glm.hpp"
 #include <functional>
 
@@ -71,7 +71,7 @@ public:
     if (m_shader)
       m_shader->GetProgram()->GetProgramID();
     if (m_mesh)
-      *m_mesh;
+      (void)(*m_mesh);
   }
 
   std::string GetLogData()

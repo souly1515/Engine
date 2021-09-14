@@ -1,6 +1,6 @@
 /******************************************************************************/
 /*!
-\file GraphicSystem.h
+\file GraphicsSystem_OpenGL.h
 \author Kennard Kee
 \par Email: kennard.kee\@digipen.edu
 \par DigiPen login: kennard.kee
@@ -9,8 +9,8 @@
 \par        All content © 2019 DigiPen (SINGAPORE) Corporation,
             all rights reserved.
 \brief
-This holds the implementation for GraphicSystem class
-GraphicSystem is needed for any graphics related APIs to work
+This holds the implementation for GraphicsSystem_OpenGL class
+GraphicsSystem_OpenGL is needed for any graphics related APIs to work
 it also holds managers to allow for easier access to graphics API around
 the engine
 This file also holds the declarations for various graphics related Managers
@@ -33,6 +33,7 @@ This file also holds the declarations for various graphics related Managers
 #include "Mesh/Mesh.h"
 #include "Shaders/ShaderAttachment.h"
 #include "Shaders/UniformBuffer.h"
+#include "Graphics/GraphicsSystem.h"
 
 #define SWAPBUFFER 1
 
@@ -41,7 +42,7 @@ This file also holds the declarations for various graphics related Managers
 #define USECAMERA 1
 
 
-class GraphicSystem
+class GraphicsSystem_OpenGL : public GraphicsSystem
 {
 public:
 
@@ -52,10 +53,8 @@ public:
 	};
 
 private:
-	GraphicSystem();
-	~GraphicSystem();
-	
-	static GraphicSystem * instance;
+	GraphicsSystem_OpenGL();
+	~GraphicsSystem_OpenGL();
 
 	HDC m_windowDC;//global Window-device context
 	HGLRC m_wglDC;//OpenGL-device context
@@ -114,15 +113,15 @@ private:
     void RegisterShader(ShaderPtr shader, ShaderName name);
 		void ReloadShaders();
 
-		friend class GraphicSystem;
+		friend class GraphicsSystem_OpenGL;
 	}; 
 
   bool usingDefaultCamera;
   bool enableVsync = true;
 public:
 
-	using GSPtr = GraphicSystem *;
-	static GraphicSystem * GetInstance();
+	using GSPtr = GraphicsSystem_OpenGL *;
+	static GraphicsSystem_OpenGL * GetInstance();
 	static void Exit();
 
   void ToggleVSYNC();
@@ -161,9 +160,11 @@ public:
 
 	void SetDebugDrawing();
 	void SetStandardDrawing();
+
+	friend class GraphicsSystem;
 };
 
-#define INF_GRAPHIC GraphicSystem::GetInstance()
-#define INF_G_TEXMAN GraphicSystem::GetInstance()->TexMan
-#define INF_G_LAYERMAN GraphicSystem::GetInstance()->LayerMan
-#define INF_G_SHADERMAN GraphicSystem::GetInstance()->ShaderMan
+#define INF_GRAPHIC GraphicsSystem_OpenGL::GetInstance()
+#define INF_G_TEXMAN GraphicsSystem_OpenGL::GetInstance()->TexMan
+#define INF_G_LAYERMAN GraphicsSystem_OpenGL::GetInstance()->LayerMan
+#define INF_G_SHADERMAN GraphicsSystem_OpenGL::GetInstance()->ShaderMan
